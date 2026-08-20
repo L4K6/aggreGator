@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/L4K6/config"
+	"github.com/L4K6/aggreGator/internal/config"
 )
 
 func main() {
