@@ -1,38 +1,44 @@
 package config
 
-import (
-	"encoding/json"
-	"os"
-	"path/filepath"
-)
+import ("os", "encoding/json", "filepath")
+
+const configFileName = ".gatorconfig.json"
 
 type Config struct {
-	DbUrl           string `json:"db_url"`
-	CurrentUserName string `json:"current_user_name"`
+	DBURL string "json: db_url"
+	CurrentUserName string "json: current_user_name"
 }
 
-func (c *Config) SetUser(username string) error {
-	c.CurrentUserName = username
-	err := write(c)
+func Read() (Config, error) {
+	homePath, err := os.UserHomeDir()
+	if err != nil {
+		return Config{}, err
+	}
+	fullPath := filepath.Join(homePath, configFileName)
+	var config Config
+	data, err := os.ReadFile(fullPath)
+	if err != nil {
+		return Config{}, err
+	}
+	err = json.Unmarshal(data, &config)
+	if err != nil {
+		return Config{}, err
+	}
+
+	return config, nil
+}
+func (c *Config) SetUser(user string) error {
+	c.CurrentUserName = user
+	jsonData, err := json.Marshal(c)
 	if err != nil {
 		return err
 	}
-	return nil
-}
-
-func write(cfg *Config) error {
 	homePath, err := os.UserHomeDir()
 	if err != nil {
 		return err
 	}
 	fullPath := filepath.Join(homePath, configFileName)
-
-	data, err := json.Marshal(cfg)
-	if err != nil {
-		return err
-	}
-
-	err = os.WriteFile(fullPath, data, 0600)
+	err = os.WriteFile(fullPath, jsonData, 0666)
 	if err != nil {
 		return err
 	}
