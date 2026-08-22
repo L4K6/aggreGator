@@ -4,10 +4,12 @@ import (
 	"errors"
 
 	"github.com/L4K6/aggreGator/internal/config"
+	"github.com/L4K6/aggreGator/internal/database"
 )
 
 type state struct {
-	config *config.Config
+	config  *config.Config
+	queries *database.Queries
 }
 
 type command struct {

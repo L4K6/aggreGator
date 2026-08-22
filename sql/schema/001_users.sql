@@ -1,10 +1,9 @@
 -- +goose Up
 Create Table users(
-    id int primary key,
+    id UUID primary key,
     created_at timestamp not null,
-    updated_at timestamp null,
+    updated_at timestamp not null,
     name text unique not null
 );
-
 -- +goose Down
 Drop Table users;
