@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 
 	"github.com/L4K6/aggreGator/internal/config"
@@ -35,4 +36,12 @@ func (cmds *commands) run(s *state, c command) error {
 
 func (cmds *commands) register(name string, f func(*state, command) error) {
 	cmds.commands[name] = f
+}
+
+func (cmds *commands) reset(s *state, _ command) error {
+	err := s.queries.DeleteAllUsers(context.Background())
+	if err != nil {
+		return err
+	}
+	return nil
 }
