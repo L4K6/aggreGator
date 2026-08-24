@@ -38,8 +38,9 @@ func handlerRegister(s *state, c command) error {
 		fmt.Println("error creating user:", err)
 		os.Exit(1)
 	}
-	s.config.SetUser(newUser.Name)
-	fmt.Println("user has been set")
+	s.config.CurrentUserName = c.args[0]
+	s.config.SetUser(s.config.CurrentUserName)
+	fmt.Println("user has been created")
 	log.Println(dbUser)
 	return nil
 }

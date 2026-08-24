@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/L4K6/aggreGator/internal/config"
 	"github.com/L4K6/aggreGator/internal/database"
@@ -42,6 +43,21 @@ func (cmds *commands) reset(s *state, _ command) error {
 	err := s.queries.DeleteAllUsers(context.Background())
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+func (cmds *commands) users(s *state, _ command) error {
+	users, err := s.queries.GetUsers(context.Background())
+	if err != nil {
+		return err
+	}
+	for _, user := range users {
+		if s.config.CurrentUserName == user.Name {
+			fmt.Println("*", user.Name, "(current)")
+		} else {
+			fmt.Println("*", user.Name)
+		}
 	}
 	return nil
 }
