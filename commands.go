@@ -70,3 +70,27 @@ func agg(_ *state, _ command) error {
 	fmt.Printf("%+v\n", feed)
 	return nil
 }
+func addfeed(s *state, c command) error {
+	if len(c.args) != 2 {
+		return fmt.Errorf("Missing argument feed")
+	}
+	feedName := c.args[0]
+	url := c.args[1]
+	userName := s.config.CurrentUserName
+
+	user, err := s.queries.GetUser(context.Background(), userName)
+	if err != nil {
+		return err
+	}
+	dbArgs := database.CreateFeedParams{
+		Name:   feedName,
+		Url:    url,
+		UserID: user.ID,
+	}
+	feed, err := s.queries.CreateFeed(context.Background(), dbArgs)
+	if err != nil {
+		return err
+	}
+	fmt.Println(feed)
+	return nil
+}
