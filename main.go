@@ -41,6 +41,7 @@ func main() {
 	commands.register("register", func(stateInstance *state, cmd command) error { return handlerRegister(stateInstance, cmd) })
 	commands.register("reset", func(stateInstance *state, cmd command) error { return commands.reset(stateInstance, cmd) })
 	commands.register("users", func(stateInstance *state, cmd command) error { return commands.users(stateInstance, cmd) })
+	commands.register("agg", func(stateInstance *state, cmd command) error { return agg(stateInstance, cmd) })
 
 	err = commands.run(&stateInstance, cmd)
 	if err != nil {

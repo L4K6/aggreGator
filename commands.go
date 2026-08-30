@@ -61,3 +61,12 @@ func (cmds *commands) users(s *state, _ command) error {
 	}
 	return nil
 }
+
+func agg(_ *state, _ command) error {
+	feed, err := fetchFeed(context.Background(), "https://www.wagslane.dev/index.xml")
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%+v\n", feed)
+	return nil
+}
