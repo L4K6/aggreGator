@@ -94,3 +94,18 @@ func addfeed(s *state, c command) error {
 	fmt.Println(feed)
 	return nil
 }
+
+func feeds(s *state, _ command) error {
+	feeds, err := s.queries.GetFeeds(context.Background())
+	if err != nil {
+		return err
+	}
+
+	for _, feed := range feeds {
+		fmt.Println(feed.Name)
+		fmt.Println(feed.Url)
+		fmt.Println(feed.UserName)
+	}
+
+	return nil
+}

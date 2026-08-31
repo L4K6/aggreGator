@@ -43,6 +43,7 @@ func main() {
 	commands.register("users", func(stateInstance *state, cmd command) error { return commands.users(stateInstance, cmd) })
 	commands.register("agg", func(stateInstance *state, cmd command) error { return agg(stateInstance, cmd) })
 	commands.register("addfeed", func(stateInstance *state, cmd command) error { return addfeed(stateInstance, cmd) })
+	commands.register("feeds", func(stateInstance *state, cmd command) error { return feeds(stateInstance, cmd) })
 
 	err = commands.run(&stateInstance, cmd)
 	if err != nil {
