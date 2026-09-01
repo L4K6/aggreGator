@@ -70,18 +70,13 @@ func agg(_ *state, _ command) error {
 	fmt.Printf("%+v\n", feed)
 	return nil
 }
-func addfeed(s *state, c command) error {
+func addfeed(s *state, c command, user database.User) error {
 	if len(c.args) != 2 {
 		return fmt.Errorf("Missing argument feed")
 	}
 	feedName := c.args[0]
 	url := c.args[1]
-	userName := s.config.CurrentUserName
 
-	user, err := s.queries.GetUser(context.Background(), userName)
-	if err != nil {
-		return err
-	}
 	dbArgs := database.CreateFeedParams{
 		Name:   feedName,
 		Url:    url,
@@ -117,17 +112,12 @@ func feeds(s *state, _ command) error {
 	return nil
 }
 
-func follow(s *state, c command) error {
+func follow(s *state, c command, user database.User) error {
 	if len(c.args) != 1 {
 		return errors.New("follow command only takes one argument")
 	}
 	url := c.args[0]
 	feed, err := s.queries.GetFeedByURL(context.Background(), url)
-	if err != nil {
-		return err
-	}
-	userName := s.config.CurrentUserName
-	user, err := s.queries.GetUser(context.Background(), userName)
 	if err != nil {
 		return err
 	}
@@ -143,14 +133,7 @@ func follow(s *state, c command) error {
 	return nil
 }
 
-func following(s *state, c command) error {
-
-	userName := s.config.CurrentUserName
-	user, err := s.queries.GetUser(context.Background(), userName)
-	if err != nil {
-		return err
-	}
-
+func following(s *state, c command, user database.User) error {
 	feedFollowsForUser, err := s.queries.GetFeedFollowsForUser(context.Background(), user.ID)
 	if err != nil {
 		return err

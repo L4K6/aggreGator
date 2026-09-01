@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"os"
@@ -42,14 +43,24 @@ func main() {
 	commands.register("reset", func(stateInstance *state, cmd command) error { return commands.reset(stateInstance, cmd) })
 	commands.register("users", func(stateInstance *state, cmd command) error { return commands.users(stateInstance, cmd) })
 	commands.register("agg", func(stateInstance *state, cmd command) error { return agg(stateInstance, cmd) })
-	commands.register("addfeed", func(stateInstance *state, cmd command) error { return addfeed(stateInstance, cmd) })
 	commands.register("feeds", func(stateInstance *state, cmd command) error { return feeds(stateInstance, cmd) })
-	commands.register("follow", func(stateInstance *state, cmd command) error { return follow(stateInstance, cmd) })
-	commands.register("following", func(stateInstance *state, cmd command) error { return following(stateInstance, cmd) })
+	commands.register("addfeed", middlewareLoggedIn(addfeed))
+	commands.register("follow", middlewareLoggedIn(follow))
+	commands.register("following", middlewareLoggedIn(following))
 
 	err = commands.run(&stateInstance, cmd)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
+	}
+}
+func middlewareLoggedIn(handler func(s *state, cmd command, user database.User) error) func(*state, command) error {
+	return func(s *state, cmd command) error {
+		user, err := s.queries.GetUser(context.Background(), s.config.CurrentUserName)
+		if err != nil {
+			return err
+		}
+
+		return handler(s, cmd, user)
 	}
 }
