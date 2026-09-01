@@ -109,3 +109,29 @@ func feeds(s *state, _ command) error {
 
 	return nil
 }
+
+func follow(s *state, c command) error {
+	if len(c.args) != 1 {
+		return errors.New("follow command only takes one argument")
+	}
+	url := c.args[0]
+	feed, err := s.queries.GetFeedByURL(context.Background(), url)
+	if err != nil {
+		return err
+	}
+	userName := s.config.CurrentUserName
+	user, err := s.queries.GetUser(context.Background(), userName)
+	if err != nil {
+		return err
+	}
+
+	var feedFollowParams = database.CreateFeedFollowParams{UserID: user.ID, FeedID: feed.ID}
+	feedFollowRow, err := s.queries.CreateFeedFollow(context.Background(), feedFollowParams)
+	if err != nil {
+		return err
+	}
+	fmt.Println(feedFollowRow.UserName)
+	fmt.Println(feedFollowRow.FeedName)
+
+	return nil
+}
