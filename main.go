@@ -45,6 +45,7 @@ func main() {
 	commands.register("addfeed", func(stateInstance *state, cmd command) error { return addfeed(stateInstance, cmd) })
 	commands.register("feeds", func(stateInstance *state, cmd command) error { return feeds(stateInstance, cmd) })
 	commands.register("follow", func(stateInstance *state, cmd command) error { return follow(stateInstance, cmd) })
+	commands.register("following", func(stateInstance *state, cmd command) error { return following(stateInstance, cmd) })
 
 	err = commands.run(&stateInstance, cmd)
 	if err != nil {

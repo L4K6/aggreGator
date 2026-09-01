@@ -91,6 +91,13 @@ func addfeed(s *state, c command) error {
 	if err != nil {
 		return err
 	}
+
+	var feedFollowParams = database.CreateFeedFollowParams{UserID: user.ID, FeedID: feed.ID}
+
+	_, err = s.queries.CreateFeedFollow(context.Background(), feedFollowParams)
+	if err != nil {
+		return err
+	}
 	fmt.Println(feed)
 	return nil
 }
@@ -133,5 +140,23 @@ func follow(s *state, c command) error {
 	fmt.Println(feedFollowRow.UserName)
 	fmt.Println(feedFollowRow.FeedName)
 
+	return nil
+}
+
+func following(s *state, c command) error {
+
+	userName := s.config.CurrentUserName
+	user, err := s.queries.GetUser(context.Background(), userName)
+	if err != nil {
+		return err
+	}
+
+	feedFollowsForUser, err := s.queries.GetFeedFollowsForUser(context.Background(), user.ID)
+	if err != nil {
+		return err
+	}
+	for _, feed := range feedFollowsForUser {
+		fmt.Println(feed.FeedName)
+	}
 	return nil
 }
